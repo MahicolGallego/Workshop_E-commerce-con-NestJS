@@ -7,6 +7,8 @@ import { OrderModule } from './order/order.module';
 import { RolespermissionsModule } from './rolespermissions/rolespermissions.module';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
+import { RolesModule } from './roles/roles.module';
+import { EntityModule } from './entity/entity.module';
 
 
 @Module({
@@ -25,7 +27,8 @@ import { CommonModule } from './common/common.module';
         synchronize: true,
         logging: true,
     })
-  }), UsersModule, ProductsModule, OrderModule, RolespermissionsModule, AuthModule, CommonModule],
+  }), UsersModule, ProductsModule, OrderModule, RolespermissionsModule, AuthModule, CommonModule, RolesModule, EntityModule],
   providers: [],
 })
 export class AppModule {}
+

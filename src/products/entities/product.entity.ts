@@ -7,16 +7,16 @@ export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: false })
   name: string;
 
-  @Column({ type: 'decimal' })
+  @Column({ type: 'decimal', nullable: false })
   price: number;
 
   @Column({ type: 'text', nullable: true })
   description?: string;
 
-  @ManyToMany(() => Order, order => order.products)
+  @ManyToMany(() => Order, order => order.products, {nullable: false})
   @JoinTable()
   orders: Order[];
 }

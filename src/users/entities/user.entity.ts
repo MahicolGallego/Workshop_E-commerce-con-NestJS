@@ -7,15 +7,12 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255, unique: true, nullable: false})
   email: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: false})
   @Exclude() // Exclude from serialization
   password: string;
-
-  @Column({ type: 'varchar', length: 50, default: 'user' })
-  role: string;
 
   @OneToMany(() => Order, order => order.user)
   orders: Order[];

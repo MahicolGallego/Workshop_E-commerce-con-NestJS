@@ -6,9 +6,9 @@ export class Role {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'varchar', length: 50, unique: true })
+  @Column({ type: 'varchar', length: 50, unique: true, nullable: false})
   role: string;
 
-  @OneToMany(() => RolePermission, permission => permission.role)
+  @OneToMany(() => RolePermission, permissions => permissions.role)
   permissions: RolePermission[];
 }
