@@ -17,6 +17,5 @@ export class Product {
   description?: string;
 
   @ManyToMany(() => Order, order => order.products, {nullable: false})
-  @JoinTable()
   orders: Order[];
 }

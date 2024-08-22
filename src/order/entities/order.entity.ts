@@ -4,20 +4,32 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTabl
 
 @Entity()
 export class Order {
+
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ type: 'int', nullable: false})
   user_id: number;
 
+  @Column({ type: 'decimal', nullable: false})
+  totalPrice: number;
+
   @ManyToOne(() => User, user => user.orders, { nullable: false })
   @JoinColumn({ name: "user_id"})
   user: User;
 
-  @ManyToMany(() => Product, product => product.orders)
-  @JoinTable()
+  @ManyToMany(() => Product)
+  @JoinTable({
+    name: "order_products",
+    joinColumn: {
+      name: "order_id",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "product_id",
+      referencedColumnName: "id"
+    }
+  })
   products: Product[];
 
-  @Column({ type: 'decimal', nullable: false})
-  totalPrice: number;
 }
