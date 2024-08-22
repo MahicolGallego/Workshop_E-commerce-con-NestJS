@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Order } from 'src/order/entities/order.entity';
 import { Role } from 'src/roles/entities/role.entity';
@@ -15,19 +15,14 @@ export class User {
   @Exclude() // Exclude from serialization
   password: string;
 
-  @ManyToMany(() => Role, role => role.users)
-  @JoinTable({
-    name: "user_roles",
-    joinColumn: {
-      name: "user_id",
-      referencedColumnName: "id"
-    },
-    inverseJoinColumn: {
-      name: "role_id",
-      referencedColumnName: "id"
-    }
+  @Column({ type: 'int', nullable: false})
+  role_id: number;
+
+  @OneToMany(() => Role, role => role.users)
+  @JoinColumn({
+    name: "role_id",
   })
-  roles: Role[]
+  role: Role[]
 
   @OneToMany(() => Order, order => order.user)
   orders: Order[];

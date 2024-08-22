@@ -10,7 +10,7 @@ export class Role {
   @Column({ type: 'varchar', length: 50, unique: true, nullable: false})
   role: string;
 
-  @ManyToMany(() => User, user => user.roles)
+  @ManyToMany(() => User, user => user.role)
   users: User[];
 
   @OneToMany(() => RolePermission, permissions => permissions.role)
