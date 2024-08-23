@@ -9,21 +9,26 @@ import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { RolesModule } from './roles/roles.module';
 import { EntityModule } from './entity/entity.module';
+import { User } from './users/entities/user.entity';
+import { Role } from './roles/entities/role.entity';
+import { EntityModel } from './entity/entities/entity.entity';
+import { RolePermission } from './rolespermissions/entities/rolespermissions.entity';
+import { Product } from './products/entities/product.entity';
+import { Order } from './order/entities/order.entity';
 
 
 @Module({
   imports: [ConfigModule.forRoot(), TypeOrmModule.forRootAsync({
     imports: [ConfigModule],
     inject: [ConfigService],
-    useFactory: (configService: ConfigService) => ({
-      type: 'mysql',
+    useFactory: (configService: ConfigService) => ({ type: 'mysql',
         host: configService.get<string>('DATABASE_HOST'),
         port: configService.get<number>('DATABASE_PORT'),
         username: configService.get<string>('DATABASE_USER'),
         password: configService.get<string>('DATABASE_PASSWORD'),
         database: configService.get<string>('DATABASE_NAME'),
-        entities: [],
-        // autoLoadEntities: true,
+        entities: [User, Role, EntityModel, RolePermission, Product, Order],
+        //autoLoadEntities: true,
         synchronize: true,
         logging: true,
     })

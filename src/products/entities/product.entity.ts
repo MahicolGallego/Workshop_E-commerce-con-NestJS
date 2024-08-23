@@ -1,8 +1,7 @@
 import { Order } from 'src/order/entities/order.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 
-
-@Entity()
+@Entity("products")
 export class Product {
   @PrimaryGeneratedColumn()
   id: number;

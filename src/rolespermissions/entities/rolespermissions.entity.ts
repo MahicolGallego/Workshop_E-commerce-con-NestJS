@@ -1,7 +1,8 @@
 import { EntityModel } from 'src/entity/entities/entity.entity';
 import { Role } from 'src/roles/entities/role.entity';
-import { Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Entity } from 'typeorm';
 
+@Entity("roles_permissions")
 export class RolePermission {
   @PrimaryGeneratedColumn()
   id: number;
@@ -13,25 +14,25 @@ export class RolePermission {
   entity_id: number;
 
   @Column({ type: 'boolean', default: false })
-  canGet: boolean;
+  can_get: boolean;
   
   @Column({ type: 'boolean', default: false })
-  canGetOne: boolean;
+  can_getone: boolean;
   
   @Column({ type: 'boolean', default: false })
-  canUpdate: boolean;
+  can_update: boolean;
   
   @Column({ type: 'boolean', default: false })
-  canDelete: boolean;
+  can_delete: boolean;
   
   @Column({ type: 'boolean', default: false })
-  canCreate: boolean;
+  can_create: boolean;
 
   @ManyToOne(() => Role, role => role.permissions, { nullable: false })
   @JoinColumn({name: "role_id"})
   role: Role;
   
-  @ManyToOne(() => EntityModel, entity => entity.permissions, { nullable: false })
+  @ManyToOne(() => EntityModel, entitymodel => entitymodel.permissions, { nullable: false })
   @JoinColumn({name: "entity_id"})
   entity: EntityModel;
 }

@@ -2,7 +2,7 @@ import { Product } from 'src/products/entities/product.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable, JoinColumn } from 'typeorm';
 
-@Entity()
+@Entity("orders")
 export class Order {
 
   @PrimaryGeneratedColumn()
@@ -11,7 +11,7 @@ export class Order {
   @Column({ type: 'int', nullable: false})
   user_id: number;
 
-  @Column({ type: 'decimal', nullable: false})
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false})
   totalPrice: number;
 
   @ManyToOne(() => User, user => user.orders, { nullable: false })

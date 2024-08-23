@@ -66,6 +66,11 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+## Mock sql data
+
+```bash
+$  You find the commands in the data.sql at the root of the project
+```
 
 ## Resources
 

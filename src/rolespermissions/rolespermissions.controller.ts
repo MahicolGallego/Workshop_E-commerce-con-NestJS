@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { RolesPermissionsService } from './rolespermissions.service';
-import { CreateRolespermissionDto } from './dto/create-rolespermission.dto';
+import { CreateRolePermissionDto } from './dto/create-rolespermission.dto';
 import { UpdateRolespermissionDto } from './dto/update-rolespermission.dto';
 
 @Controller('rolespermissions')
@@ -8,7 +8,7 @@ export class RolesPermissionsController {
   constructor(private readonly rolesPermissionsService: RolesPermissionsService) {}
 
   @Post()
-  create(@Body() createRolespermissionDto: CreateRolespermissionDto) {
+  create(@Body() createRolespermissionDto: CreateRolePermissionDto) {
     return this.rolesPermissionsService.create(createRolespermissionDto);
   }
 
