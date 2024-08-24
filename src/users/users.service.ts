@@ -15,14 +15,14 @@ export class UsersService {
   async create(createUserDto: CreateUserDto): Promise<User> {
    
       const roleToUser = createUserDto.role_id;
-      const role = await this.roleRepository.findOne({where: {id: roleToUser}, relations: []});
+      const role = await this.roleRepository.findOne({where: {id: roleToUser}});
       const newUser = this.userRepository.create({ ...createUserDto, role });
       return await this.userRepository.save(newUser);
     
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+    return await this.userRepository.find({relations: ['role', 'orders'], order: { email: 'DESC'}});
   }
 
   async findOne(id: number): Promise<User | null> {

@@ -18,7 +18,7 @@ export class Order {
   @JoinColumn({ name: "user_id"})
   user: User;
 
-  @ManyToMany(() => Product)
+  @ManyToMany(() => Product, product => product.orders)
   @JoinTable({
     name: "order_products",
     joinColumn: {

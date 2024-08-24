@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable, JoinColumn, DeleteDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, JoinColumn, DeleteDateColumn, ManyToOne } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Order } from 'src/order/entities/order.entity';
 import { Role } from 'src/roles/entities/role.entity';
@@ -21,7 +21,7 @@ export class User {
   @DeleteDateColumn()
   deleted_at: Date;
 
-  @OneToMany(() => Role, role => role.users)
+  @ManyToOne(() => Role, role => role.users)
   @JoinColumn({
     name: "role_id",
   })
