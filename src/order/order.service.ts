@@ -6,6 +6,8 @@ import { Order } from './entities/order.entity';
 import { Product } from 'src/products/entities/product.entity';
 import { Double, Repository, UpdateResult } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { getProducts } from 'src/common/helpers/get-products';
+import { calculateTotalPrice } from 'src/common/helpers/calculate-total-price';
 
 @Injectable()
 export class OrderService {
@@ -27,22 +29,10 @@ export class OrderService {
     }
 
     // Buscar los productos en la base de datos
-    const products: Product[] = [];
-
-    // Verificar que todos los productos sean válidos
-    for (let id of createOrderDto.products) {
-      const product = await this.productsRepository.findOne({ where: { id } });
-      if (!product) {
-        throw new NotFoundException('Some products do not exist');
-      }
-      products.push(product);
-    }
+    const products: Product[] = await getProducts(createOrderDto.products, this.productsRepository)
 
     //Calcular costo total de la orden
-    const totalPrice: number = products.reduce((Result: number, currentElement: Product) => {
-      return Result += currentElement.price;
-    }, 0)
-
+    const totalPrice: number = calculateTotalPrice(products);
 
     // Crear la instancia de Order
     const order = new Order();
@@ -62,13 +52,25 @@ export class OrderService {
     return await this.ordersRepository.findOne({ where: { id }, relations: ['user', 'products'] });
   }
 
-  async update(id: number, updateOrderDto: UpdateOrderDto): Promise<UpdateResult> {
+  async update(id: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
+
     const order = await this.ordersRepository.findOne({ where: { id }, relations: ['products'] });
 
     if (!order) {
       throw new NotFoundException(`Order not found`);
     }
-    return await this.ordersRepository.update(id, updateOrderDto);
+
+    // Buscar los productos en la base de datos
+    const newProducts: Product[] = await getProducts(updateOrderDto.products, this.productsRepository)
+
+    //Calcular costo total de la orden
+    const newTotalPrice: number = calculateTotalPrice(newProducts);
+
+    order.products = [];
+    order.products = newProducts;
+    order.totalPrice = newTotalPrice;
+
+    return await this.ordersRepository.save(order);
   }
 
   async remove(id: number) {

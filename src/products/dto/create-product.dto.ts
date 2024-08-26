@@ -1,4 +1,4 @@
-import { IsString, IsDecimal, IsOptional, Length } from 'class-validator';
+import { IsString, IsDecimal, IsOptional, Length, Matches } from 'class-validator';
 
 export class CreateProductDto {
     @IsString()
@@ -6,6 +6,7 @@ export class CreateProductDto {
     name: string;
 
     @IsDecimal({ decimal_digits: '2', force_decimal: true })
+    @Matches(/^\d+(\.\d{1,2})?$/, { message: 'Price must be a decimal with up to 2 decimal places' })
     price: number;
 
     @IsOptional()
