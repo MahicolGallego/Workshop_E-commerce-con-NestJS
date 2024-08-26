@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -10,23 +10,26 @@ import { Role } from 'src/roles/entities/role.entity';
 export class UsersService {
 
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>,
-  @InjectRepository(Role) private readonly roleRepository: Repository<Role>){}
+    @InjectRepository(Role) private readonly roleRepository: Repository<Role>) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-   
-      const roleToUser = createUserDto.role_id;
-      const role = await this.roleRepository.findOne({where: {id: roleToUser}});
-      const newUser = this.userRepository.create({ ...createUserDto, role });
-      return await this.userRepository.save(newUser);
-    
+
+    const roleToUser = createUserDto.role_id;
+    const role = await this.roleRepository.findOne({ where: { id: roleToUser } });
+    if (!role) {
+      throw new NotFoundException(`The role does not exist`);
+    }
+    const newUser = this.userRepository.create({ ...createUserDto, role });
+    return await this.userRepository.save(newUser);
+
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find({relations: ['role', 'orders'], order: { email: 'DESC'}});
+    return await this.userRepository.find({ relations: ['role', 'orders'], order: { email: 'DESC' } });
   }
 
   async findOne(id: number): Promise<User | null> {
-    return await this.userRepository.findOne({where: {id}, relations: ['role', 'orders']});
+    return await this.userRepository.findOne({ where: { id }, relations: ['role', 'orders'] });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<UpdateResult> {

@@ -2,9 +2,9 @@ CREATE DATABASE IF NOT EXISTS ecommerce_nestjs;
 
 USE ecommerce_nestjs;
 
-INSERT INTO entities(name) values("order"), ("product"), ("user")
+INSERT INTO entities(name) values("order"), ("product"), ("user");
 
-INSERT INTO roles(name) values("admin"), ("client")
+INSERT INTO roles(name) values("admin"), ("client");
 
 INSERT INTO roles_permissions(role_id, entity_id, can_create, can_update, can_delete, can_get, can_getone)
 VAlUES(1, 1, false, true, true, true, true),
