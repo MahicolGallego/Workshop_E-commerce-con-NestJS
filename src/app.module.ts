@@ -16,12 +16,14 @@ import { RolePermission } from './rolespermissions/entities/rolespermissions.ent
 import { Product } from './products/entities/product.entity';
 import { Order } from './order/entities/order.entity';
 
-
 @Module({
-  imports: [ConfigModule.forRoot(), TypeOrmModule.forRootAsync({
-    imports: [ConfigModule],
-    inject: [ConfigService],
-    useFactory: (configService: ConfigService) => ({ type: 'mysql',
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
         host: configService.get<string>('DATABASE_HOST'),
         port: configService.get<number>('DATABASE_PORT'),
         username: configService.get<string>('DATABASE_USER'),
@@ -31,9 +33,17 @@ import { Order } from './order/entities/order.entity';
         //autoLoadEntities: true,
         synchronize: true,
         logging: true,
-    })
-  }), UsersModule, ProductsModule, OrderModule, RolespermissionsModule, AuthModule, CommonModule, RolesModule, EntityModule],
+      }),
+    }),
+    UsersModule,
+    ProductsModule,
+    OrderModule,
+    RolespermissionsModule,
+    AuthModule,
+    CommonModule,
+    RolesModule,
+    EntityModule,
+  ],
   providers: [],
 })
 export class AppModule {}
-

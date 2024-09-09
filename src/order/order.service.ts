@@ -4,35 +4,30 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { Product } from 'src/products/entities/product.entity';
-import { Double, Repository, UpdateResult } from 'typeorm';
-import { User } from 'src/users/entities/user.entity';
-import { getProducts } from 'src/common/helpers/get-products';
-import { calculateTotalPrice } from 'src/common/helpers/calculate-total-price';
+import { Repository } from 'typeorm';
+import { UsersService } from 'src/users/users.service';
+import { ProductsService } from 'src/products/products.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     @InjectRepository(Order)
     private ordersRepository: Repository<Order>,
-    @InjectRepository(Product)
-    private productsRepository: Repository<Product>,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) { }
+    private readonly usersServices: UsersService,
+    private readonly productsServices: ProductsService,
+  ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
-
     // Buscar usuario en la base de datos
-    const user = await this.usersRepository.findOne({ where: { id: createOrderDto.user_id } })
-    if (!user) {
-      throw new NotFoundException('User do not exist');
-    }
+    const user = await this.usersServices.findOne(createOrderDto.user_id);
 
     // Buscar los productos en la base de datos
-    const products: Product[] = await getProducts(createOrderDto.products, this.productsRepository)
-
+    const products: Product[] = await this.productsServices.findByIds(
+      createOrderDto.products,
+    );
     //Calcular costo total de la orden
-    const totalPrice: number = calculateTotalPrice(products);
+    const totalPrice: number =
+      this.productsServices.calculateTotalPrice(products);
 
     // Crear la instancia de Order
     const order = new Order();
@@ -49,22 +44,30 @@ export class OrderService {
   }
 
   async findOne(id: number): Promise<Order | null> {
-    return await this.ordersRepository.findOne({ where: { id }, relations: ['user', 'products'] });
+    return await this.ordersRepository.findOne({
+      where: { id },
+      relations: ['user', 'products'],
+    });
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
-
-    const order = await this.ordersRepository.findOne({ where: { id }, relations: ['products'] });
+    const order = await this.ordersRepository.findOne({
+      where: { id },
+      relations: ['products'],
+    });
 
     if (!order) {
       throw new NotFoundException(`Order not found`);
     }
 
     // Buscar los productos en la base de datos
-    const newProducts: Product[] = await getProducts(updateOrderDto.products, this.productsRepository)
+    const newProducts: Product[] = await this.productsServices.findByIds(
+      updateOrderDto.products,
+    );
 
     //Calcular costo total de la orden
-    const newTotalPrice: number = calculateTotalPrice(newProducts);
+    const newTotalPrice: number =
+      this.productsServices.calculateTotalPrice(newProducts);
 
     order.products = [];
     order.products = newProducts;

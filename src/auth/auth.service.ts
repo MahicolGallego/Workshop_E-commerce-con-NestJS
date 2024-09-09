@@ -1,24 +1,30 @@
 import { Injectable } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
+import * as bcrypt from 'bcrypt';
+import { ErrorManager } from 'src/common/filters/error-manager.filter';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto) {
-    return 'This action adds a new auth';
-  }
+  constructor(private readonly userService: UsersService) {}
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  async validateUser(usernameOrEmail: string, password: string) {
+    try {
+      const user =
+        await this.userService.findByUsernameOrEmail(usernameOrEmail);
+      if (!(await bcrypt.compare(password, user.password))) {
+        throw new ErrorManager({
+          type: 'UNAUTHORIZED',
+          message: 'Incorrect credentials',
+        });
+      }
+      return user;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw ErrorManager.createSignatureError(error.message);
+      } else {
+        // Manejo para errores inesperados que no sean instancias de Error
+        throw ErrorManager.createSignatureError('An unexpected error occurred');
+      }
+    }
   }
 }

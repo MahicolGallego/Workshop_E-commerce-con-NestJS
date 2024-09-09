@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -8,7 +17,7 @@ import { DeleteResult } from 'typeorm';
 
 @Controller('orders')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) { }
+  constructor(private readonly orderService: OrderService) {}
 
   @Post()
   @UsePipes(ValidateProductsToOrderPipe)
@@ -28,7 +37,10 @@ export class OrderController {
 
   @Patch(':id')
   @UsePipes(ValidateProductsToOrderPipe)
-  update(@Param('id') id: number, @Body() updateOrderDto: UpdateOrderDto): Promise<Order> {
+  update(
+    @Param('id') id: number,
+    @Body() updateOrderDto: UpdateOrderDto,
+  ): Promise<Order> {
     return this.orderService.update(id, updateOrderDto);
   }
 
