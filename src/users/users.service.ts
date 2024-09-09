@@ -13,21 +13,22 @@ import { ErrorManager } from 'src/common/filters/error-manager.filter';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    // @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
     private readonly configService: ConfigService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const roleToUser = createUserDto.role_id;
-    const role = await this.roleRepository.findOne({
-      where: { id: roleToUser },
-    });
-    if (!role) {
-      throw new NotFoundException(`The role does not exist`);
-    }
+    // const roleToUser = createUserDto.role_id;
+    // const role = await this.roleRepository.findOne({
+    //   where: { id: roleToUser },
+    // });
+    // if (!role) {
+    //   throw new NotFoundException(`The role does not exist`);
+    // }
     const hashedPassword = await this.encryptPassword(createUserDto.password);
     createUserDto.password = hashedPassword;
-    const newUser = this.userRepository.create({ ...createUserDto, role });
+    const newUser = this.userRepository.create({ ...createUserDto});
+    // const newUser = this.userRepository.create({ ...createUserDto, role });
     return await this.userRepository.save(newUser);
   }
 
@@ -38,7 +39,7 @@ export class UsersService {
     });
   }
 
-  async findOne(id: number): Promise<User | null> {
+  async findOne(id: string): Promise<User | null> {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['role', 'orders'],
@@ -80,13 +81,13 @@ export class UsersService {
   }
 
   async update(
-    id: number,
+    id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
     return await this.userRepository.update(id, updateUserDto);
   }
 
-  async remove(id: number): Promise<DeleteResult> {
+  async remove(id: string): Promise<DeleteResult> {
     return await this.userRepository.softDelete(id);
   }
 

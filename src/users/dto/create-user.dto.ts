@@ -1,19 +1,52 @@
-import { IsString, IsEmail, Length, IsInt, IsPositive } from 'class-validator';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  JoinColumn,
+  DeleteDateColumn,
+  ManyToOne,
+} from 'typeorm';
+import { Exclude } from 'class-transformer';
+import { Order } from 'src/order/entities/order.entity';
+//import { Role } from 'src/roles/entities/role.entity';
+import { IsEmail, IsUUID } from 'class-validator';
+import { Roles } from 'src/common/constants/enum-roles';
 
-export class CreateUserDto {
-  @IsEmail()
-  @Length(1, 255)
-  email: string;
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id:string;
 
-  @IsString()
-  @Length(3, 255) // Asumiendo una longitud mínima para el name
+  // @PrimaryGeneratedColumn()
+  // id: number;
+
+  @Column({ type: 'varchar', length: 255, nullable: false })
   name: string;
 
-  @IsString()
-  @Length(8, 255) // Asumiendo una longitud mínima para la contraseña
+  @IsEmail()
+  @Column({ type: 'varchar', length: 255, unique: true, nullable: false })
+  email: string;
+
+  @Exclude() // Exclude from serialization
+  @Column({ type: 'varchar', length: 255, nullable: false })
   password: string;
 
-  @IsInt()
-  @IsPositive()
-  role_id: number;
+  @Column({type: 'enum', enum: Roles, default: Roles.collaborator})
+  role: Roles
+
+  // @Column({ type: 'int', nullable: false })
+  // role_id: number;
+
+  @DeleteDateColumn()
+  deleted_at: Date;
+
+  // @ManyToOne(() => Role, (role) => role.users)
+  // @JoinColumn({
+  //   name: 'role_id',
+  // })
+  // role: Role;
+
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[];
 }

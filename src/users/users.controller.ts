@@ -9,7 +9,6 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { DeleteResult, UpdateResult } from 'typeorm';
@@ -19,10 +18,10 @@ import { ValidateUpdateUserPipe } from 'src/common/pipes/validate-update-user.pi
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createUserDto);
-  }
+  // @Post()
+  // create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  //   return this.usersService.create(createUserDto);
+  // }
 
   @Get()
   findAll(): Promise<User[]> {
@@ -30,21 +29,21 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<User | null> {
+  findOne(@Param('id') id: string): Promise<User | null> {
     return this.usersService.findOne(id);
   }
 
   @Patch(':id')
   @UsePipes(ValidateUpdateUserPipe)
   update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<DeleteResult> {
+  remove(@Param('id') id: string): Promise<DeleteResult> {
     return this.usersService.remove(id);
   }
 }
