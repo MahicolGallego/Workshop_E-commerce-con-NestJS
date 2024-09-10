@@ -1,5 +1,5 @@
-export enum Roles{
-    company = 'company',
-    leader = 'leader',
-    collaborator = 'colaborator'
+export enum Roles {
+  company = 'company',
+  leader = 'leader',
+  collaborator = 'colaborator',
 }

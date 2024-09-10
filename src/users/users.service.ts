@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from 'src/roles/entities/role.entity';
+// import { Role } from 'src/roles/entities/role.entity';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { ErrorManager } from 'src/common/filters/error-manager.filter';
@@ -27,7 +27,7 @@ export class UsersService {
     // }
     const hashedPassword = await this.encryptPassword(createUserDto.password);
     createUserDto.password = hashedPassword;
-    const newUser = this.userRepository.create({ ...createUserDto});
+    const newUser = this.userRepository.create({ ...createUserDto });
     // const newUser = this.userRepository.create({ ...createUserDto, role });
     return await this.userRepository.save(newUser);
   }
